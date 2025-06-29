@@ -13,8 +13,9 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-COMMENT ON SCHEMA "public" IS 'standard public schema';
 
+
+ALTER SCHEMA "public" OWNER TO "postgres";
 
 
 CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
@@ -46,6 +47,13 @@ CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
 
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA "public";
 
 
 
@@ -299,7 +307,8 @@ CREATE TABLE IF NOT EXISTS "public"."expenses" (
     "budgetCategory" "text",
     "isBusinessExpense" boolean DEFAULT false NOT NULL,
     "taxDeductible" boolean DEFAULT false NOT NULL,
-    "chatSessionId" "text"
+    "chatSessionId" "text",
+    "embedding" "public"."vector"(768)
 );
 
 
@@ -325,7 +334,8 @@ CREATE TABLE IF NOT EXISTS "public"."income" (
     "originalInput" "text",
     "tags" "text"[],
     "notes" "text",
-    "chatSessionId" "text"
+    "chatSessionId" "text",
+    "embedding" "public"."vector"(768)
 );
 
 
@@ -353,7 +363,8 @@ CREATE TABLE IF NOT EXISTS "public"."savings" (
     "originalInput" "text",
     "tags" "text"[],
     "notes" "text",
-    "chatSessionId" "text"
+    "chatSessionId" "text",
+    "embedding" "public"."vector"(768)
 );
 
 
@@ -677,10 +688,7 @@ ALTER TABLE ONLY "public"."user_sessions"
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
-GRANT USAGE ON SCHEMA "public" TO "postgres";
-GRANT USAGE ON SCHEMA "public" TO "anon";
-GRANT USAGE ON SCHEMA "public" TO "authenticated";
-GRANT USAGE ON SCHEMA "public" TO "service_role";
+REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 
 
 
@@ -849,120 +857,6 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."_prisma_migrations" TO "anon";
-GRANT ALL ON TABLE "public"."_prisma_migrations" TO "authenticated";
-GRANT ALL ON TABLE "public"."_prisma_migrations" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."ai_extraction_logs" TO "anon";
-GRANT ALL ON TABLE "public"."ai_extraction_logs" TO "authenticated";
-GRANT ALL ON TABLE "public"."ai_extraction_logs" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."analytics_cache" TO "anon";
-GRANT ALL ON TABLE "public"."analytics_cache" TO "authenticated";
-GRANT ALL ON TABLE "public"."analytics_cache" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."budgets" TO "anon";
-GRANT ALL ON TABLE "public"."budgets" TO "authenticated";
-GRANT ALL ON TABLE "public"."budgets" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."chat_messages" TO "anon";
-GRANT ALL ON TABLE "public"."chat_messages" TO "authenticated";
-GRANT ALL ON TABLE "public"."chat_messages" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."chat_sessions" TO "anon";
-GRANT ALL ON TABLE "public"."chat_sessions" TO "authenticated";
-GRANT ALL ON TABLE "public"."chat_sessions" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."conversation_memory" TO "anon";
-GRANT ALL ON TABLE "public"."conversation_memory" TO "authenticated";
-GRANT ALL ON TABLE "public"."conversation_memory" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."expenses" TO "anon";
-GRANT ALL ON TABLE "public"."expenses" TO "authenticated";
-GRANT ALL ON TABLE "public"."expenses" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."income" TO "anon";
-GRANT ALL ON TABLE "public"."income" TO "authenticated";
-GRANT ALL ON TABLE "public"."income" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."savings" TO "anon";
-GRANT ALL ON TABLE "public"."savings" TO "authenticated";
-GRANT ALL ON TABLE "public"."savings" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."system_metrics" TO "anon";
-GRANT ALL ON TABLE "public"."system_metrics" TO "authenticated";
-GRANT ALL ON TABLE "public"."system_metrics" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."user_preferences" TO "anon";
-GRANT ALL ON TABLE "public"."user_preferences" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_preferences" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."user_sessions" TO "anon";
-GRANT ALL ON TABLE "public"."user_sessions" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_sessions" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."users" TO "anon";
-GRANT ALL ON TABLE "public"."users" TO "authenticated";
-GRANT ALL ON TABLE "public"."users" TO "service_role";
-
-
-
-
-
-
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "service_role";
-
-
-
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "service_role";
-
-
-
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
 
 
 
